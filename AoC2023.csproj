@@ -8,7 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Update="Solutions/Day1aInput.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="Solutions\*.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>  
   </ItemGroup>
 
 </Project>
