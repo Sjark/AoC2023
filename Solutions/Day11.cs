@@ -48,36 +48,36 @@ public class Day11 : ISolution
             }
         }
 
-        var offset = 0;
-
-        foreach (var row in rowsWithoutGalaxies)
-        {
-            grid.Insert(row + 1 + offset, [.. grid[row + offset]]);
-            offset++;
-        }
-
-        offset = 0;
-        foreach (var column in columnsWithoutGalaxies)
-        {
-            for (var x = 0; x < grid.Count; x++)
-            {
-                grid[x].Insert(column + offset, '.');
-            }
-
-            offset++;
-        }
-
         var coords = GetCoords(grid);
         var combinations = coords.SelectMany((x, i) => coords.Skip(i + 1), (x, y) => Tuple.Create(x, y)).ToList();
 
-        var total = 0;
+        var total = CalculateTotalDistance(rowsWithoutGalaxies, columnsWithoutGalaxies, combinations, 1);
+
+        Console.WriteLine($"Day11a: {total}");
+
+        var newTotal = CalculateTotalDistance(rowsWithoutGalaxies, columnsWithoutGalaxies, combinations, 999999);
+        Console.WriteLine($"Day11b: {newTotal}");
+    }
+
+    private static long CalculateTotalDistance(List<int> rowsWithoutGalaxies, List<int> columnsWithoutGalaxies, List<Tuple<Coord, Coord>> combinations, long extraSpace)
+    {
+        var total = 0L;
 
         foreach (var comb in combinations)
         {
-            total += Math.Abs(comb.Item1.X - comb.Item2.X) + Math.Abs(comb.Item1.Y - comb.Item2.Y);
+            var columns = Math.Abs(comb.Item1.X - comb.Item2.X);
+            var rows = Math.Abs(comb.Item1.Y - comb.Item2.Y);
+            var extraColumnSpaces = columnsWithoutGalaxies
+                .Where(a => a > Math.Min(comb.Item1.Y, comb.Item2.Y) && a < Math.Max(comb.Item1.Y, comb.Item2.Y))
+                .Count();
+            var extraRowSpaces = rowsWithoutGalaxies
+                .Where(a => a > Math.Min(comb.Item1.X, comb.Item2.X) && a < Math.Max(comb.Item1.X, comb.Item2.X))
+                .Count();
+
+            total += columns + rows + (extraSpace * extraColumnSpaces) + (extraSpace * extraRowSpaces);
         }
 
-        Console.WriteLine($"Day11a: {total}");
+        return total;
     }
 
     private List<Coord> GetCoords(List<List<char>> grid)
