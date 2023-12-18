@@ -87,7 +87,7 @@ public class Day10 : ISolution
         {
             for (var x = 0; x < input[y].Length; x++)
             {
-                if (!polygon.Contains(new Coord(x, y)) && IsPointInPolygon(new Coord(x, y), [.. polygon]))
+                if (!polygon.Contains(new Coord(x, y)) && Helpers.IsPointInPolygon(new Coord(x, y), [.. polygon]))
                 {
                     area++;
                 }
@@ -97,21 +97,7 @@ public class Day10 : ISolution
         Console.WriteLine($"Day10b: {area}");
     }
 
-    public bool IsPointInPolygon(Coord p, Coord[] polygon)
-    {
-        // https://wrf.ecse.rpi.edu/Research/Short_Notes/pnpoly.html
-        bool inside = false;
-        for (int i = 0, j = polygon.Length - 1; i < polygon.Length; j = i++)
-        {
-            if ((polygon[i].Y > p.Y) != (polygon[j].Y > p.Y) &&
-                 p.X < (polygon[j].X - polygon[i].X) * (p.Y - polygon[i].Y) / (polygon[j].Y - polygon[i].Y) + polygon[i].X)
-            {
-                inside = !inside;
-            }
-        }
 
-        return inside;
-    }
 
     private Coord Move(char[,] grid, Coord previousPos, Coord currentPos)
     {
@@ -127,5 +113,3 @@ public class Day10 : ISolution
         };
     }
 }
-
-public record Coord(int X, int Y);
